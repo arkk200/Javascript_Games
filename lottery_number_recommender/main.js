@@ -25,13 +25,13 @@ function drawBall(number, $parent){
     $parent.appendChild($ball);
 }
 
-for (var i = 0; i < winBalls.length; i++){
-    // setTimeout(callbackFunction, ms)
-    setTimeout(() => {
-        console.log(i) // 6, 6, 6, 6, 6, 6
-        drawBall(winBalls[i], $result);
-    }, 1000 * (i + 1));
-}
+// for (var i = 0; i < winBalls.length; i++){
+//     // setTimeout(callbackFunction, ms)
+//     setTimeout(() => {
+//         console.log(i) // 6, 6, 6, 6, 6, 6
+//         drawBall(winBalls[i], $result);
+//     }, 1000 * (i + 1));
+// }
 // var vs let
 for (let i = 0; i < winBalls.length; i++){
     // setTimeout(callbackFunction, ms)
