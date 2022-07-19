@@ -9,3 +9,9 @@ while (candidate.length > 0){
     shuffle.push(value);
 }
 console.log(shuffle);
+const winBalls = shuffle.slice(0, 6).sort((a, b) => a - b);
+// From sort((a, b) => a - b),
+// if a - b > 0 : [a, b, ...] => [b, a, ...]
+// else if a - b <= 0 : [a, b, ...] => [a, b, ...]
+const bonus = shuffle[6];
+console.log(winBalls, bonus);
