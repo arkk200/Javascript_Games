@@ -52,6 +52,18 @@ monsterList[0].name 또란 '새 이름'으로 바뀌게 된다.
 깊은 복사를 한다면 복사한 객체의 속성이 바뀌어도
 복사 되었던 객체의 속성은 바뀌지 않는다.
  */
+/*
++ 얕은 복사
+얕은 복사(shallow copy)는 중첩된 객체가 있을 때
+가장 바깥 객체만 복사되고 내부 객체는 참조 관계를 유지하는 복사를 의미한다.
+얕은 복사를 할 때는 ...(spread 문법) 연산자를 사용한다.
+스프레드 문법은 기존 객체의 속성을 새 객체의 할당할 때 사용한다.
+예)
+const arr = [{a : 1}, {b : 2}];
+const shallowCopy = [...arr]; //얕은 복사
+arr === shallowCopy; // false
+arr[0] === shallowCopy[0] && arr[1] === shallowCopy[1]; // true
+ */
 $gameMenu.addEventListener('submit', event => {
     event.preventDefault();
     const input = event.target['menu-input'].value;
@@ -75,4 +87,4 @@ $gameMenu.addEventListener('submit', event => {
     } else if(input === '3'){
 
     }
-})
+});
