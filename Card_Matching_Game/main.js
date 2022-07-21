@@ -42,6 +42,7 @@ function onClickCard() {
     // classList.toggle()은 괄호 안에 있는 class가 있을 경우 삭제하고
     // 괄호 안에 있는 class가 없을 경우 추가해준다.
     // this는 눌러서 이벤트를 감지한 div.card를 나타낸다.
+    if(clickable === false) return;
     this.classList.toggle('flipped');
     clicked.push(this); // 클릭한 div.card 가 들어감
     console.log(clicked.length);
@@ -91,13 +92,9 @@ startGame();
 
 function resetGame() {
     // $wrapper 안에 있던 카드를 다 지움
+    window.location.reload();
     $wrapper.innerHTML = '';
     // 처음에 맨 위에서 세팅해준 코드 재실행
-    colorCopy = colors.concat(colors);
-    shuffle = [];
-    completed = [];
-    clickable = false;
-    startGame();
 }
 
 document.querySelectorAll('.card').forEach((card, index) => { // 초반 카드 공개
