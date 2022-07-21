@@ -11,6 +11,7 @@ let colorCopy = colors.concat(colors);
 let shuffled = [];
 let clicked = [];
 let completed = [];
+let clickable = false; // 카드 애니메이션 중 클릭을 막기 위한 변수
 
 function shuffle(){
     for (let i = 0; colorCopy.length > 0; i++){
@@ -62,11 +63,13 @@ function onClickCard() {
         }, 1000);
         return;
     }
+    clickable = false;
     // 두번째로 뒤집힌 카드를 보여주기 위해 텀을 줌
     setTimeout(() => {
         clicked[0].classList.remove('flipped');
         clicked[1].classList.remove('flipped');
         clicked = [];
+        clickable = true;
     }, 500);
 
 }
@@ -93,6 +96,7 @@ function resetGame() {
     colorCopy = colors.concat(colors);
     shuffle = [];
     completed = [];
+    clickable = false;
     startGame();
 }
 
@@ -107,4 +111,7 @@ setTimeout(() => {
     document.querySelectorAll('.card').forEach(card => { // 카드 숨기기
         card.classList.remove('flipped');
     });
+    clickable = true; // 다 뒷면이 보이게 뒤집힌 후 카드 클릭 혀용
 }, 5000);
+
+//
