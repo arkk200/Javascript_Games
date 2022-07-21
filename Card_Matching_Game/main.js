@@ -28,7 +28,7 @@ function createCard(i){
     cardFront.className = 'card-front';
     const cardBack = document.createElement('div');
     cardBack.className = 'card-back';
-    cardBack.style.backgroundColor = shuffle[i];
+    cardBack.style.backgroundColor = shuffled[i];
     cardInner.appendChild(cardFront);
     cardInner.appendChild(cardBack);
     card.appendChild(cardInner);
@@ -45,4 +45,19 @@ function startGame() {
         $wrapper.appendChild(card);
     }
 }
+
 startGame();
+
+document.querySelectorAll('.card').forEach((card, index) => { // 초반 카드 공개
+    setTimeout(() => {
+        console.log('tes');
+        // Y축을 기준으로 180도 rotate하는 CSS class 추가
+        card.classList.add('flipped');
+    }, 1000 + 100 * index);
+});
+
+setTimeout(() => {
+    document.querySelectorAll('.card').forEach(card => { // 카드 숨기기
+        card.classList.remove('flipped');
+    });
+}, 5000);
