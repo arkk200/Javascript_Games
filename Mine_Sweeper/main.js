@@ -15,7 +15,7 @@ status codes
 
 const row = 10; // 줄
 const cell = 10; // 칸
-const mine = 1; // 지뢰 개수
+const mine = 30; // 지뢰 개수
 const CODE = {
     NORMAL: -1,
     QUESTION: -2,
@@ -139,7 +139,6 @@ function countMine(rowIndex, cellIndex){
     for(let i = 0; i < 9; i++){
         if(i === 4) continue; // 카운트 하려는 위치가 클릭한 위치라면
         mines.includes(data[rowIndex + parseInt(i / 3) - 1]?.[cellIndex + i % 3 - 1]) && mineCount++; // --(1)(2)
-        console.log(rowIndex + parseInt(i / 3) - 1, cellIndex + i % 3 - 1)
     }
     return mineCount;
 }
@@ -150,14 +149,58 @@ function onLeftClick(event){
     const cellIndex = target.cellIndex;
     const cellData = data[rowIndex][cellIndex];
     if(cellData === CODE.NORMAL) { // 닫힌 칸이라면
-        const count = countMine(rowIndex, cellIndex);
-        target.textContent = count || ''; // --(3)
-        target.className = 'opened';
-        data[rowIndex][cellIndex] = count;
+        openAround(rowIndex, cellIndex);
     } else if (cellData === CODE.MINE) { // 지뢰 칸이면
         target.textContent = 'X';
         target.className = 'opened';
         $tbody.removeEventListener('contextmenu', onRightClick);
         $tbody.removeEventListener('click', onLeftClick);
     }
+}
+
+let openCount = 0;
+
+function open(rowIndex, cellIndex) {
+    if(data[rowIndex]?.[cellIndex] >= CODE.OPENED) return; // 한 번 열었던 칸은 확인을 안해줘서 무한하게 호출되는 재귀를 끊는다.
+    const target = $tbody.children[rowIndex]?.children[cellIndex];
+    // console.log($tbody.children[rowIndex]?.children);
+    if(!target) { // 맵에 벗어날 경우 (undefined라면)
+        return;
+    }
+    const count = countMine(rowIndex, cellIndex);
+    target.textContent = count || ''; // --(3)
+    target.className = 'opened';
+    data[rowIndex][cellIndex] = count;
+    console.log(++openCount);
+    return count;
+}
+
+/*
+(4)--
+자세한 내용은 아래 링크를 참고
+https://n-log.tistory.com/31
+*/
+/*
+이 코드는 브라우저의 최대 호출 스택 크기를 알 수 있다.
+let i = 0;
+function recurse() {
+    i++;
+    recurse();
+}
+try {
+    recurse();
+} catch (ex) {
+    alert('최대 호출 스택 크기는 ' + i + '\nerror: ' + ex);
+}
+*/
+function openAround(rI, cI) { // 주변 칸 모두 여는 함수 (지뢰찾기에서 클릭한 위치의 주변 지뢰가 0개면 자동으로 주변 칸을 모두 열어준다.)
+    setTimeout(() => { // 스택 오버플로우를 방지하기 위해 비동기 함수를 사용 --(4)
+        const count = open(rI, cI);
+        if(count === 0) {
+            for(let i = 0; i < 9; i++){
+                if(i === 4) continue; // 열려는 위치가 클릭한 위치라면
+                openAround(rI + parseInt(i / 3) - 1, cI + i % 3 - 1);
+            }
+        }
+    }, 0);
 }
