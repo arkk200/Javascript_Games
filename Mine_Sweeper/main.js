@@ -1,3 +1,4 @@
+const $timer = document.querySelector('#timer');
 const $tbody = document.querySelector('#table tbody');
 const $result = document.querySelector('#result');
 
@@ -15,7 +16,7 @@ status codes
 
 const row = 10; // 줄
 const cell = 10; // 칸
-const mine = 30; // 지뢰 개수
+const mine = 5; // 지뢰 개수
 const CODE = {
     NORMAL: -1,
     QUESTION: -2,
@@ -58,7 +59,7 @@ function drawTable() {
         row.forEach((cell) => {
             const $td = document.createElement('td');
             if (cell === CODE.MINE) {
-                $td.textContent = 'X';
+                $td.textContent = ''; // 지뢰 표시 없앰
             }
             $tr.appendChild($td);
         });
@@ -88,7 +89,7 @@ function onRightClick(event) {
     } else if(cellData === CODE.FLAG_MINE){ // 지뢰가 있는 깃발이라면
         data[rowIndex][cellIndex] = CODE.MINE;
         target.className = '';
-        target.textContent = 'X';
+        target.textContent = ''; // 지뢰 표시 없앰
     } else if(cellData === CODE.NORMAL) { // 닫힌 칸이라면
         data[rowIndex][cellIndex] = CODE.QUESTION; // 물음표로 바꿈
         target.className = 'question';
@@ -103,6 +104,12 @@ function onRightClick(event) {
         target.textContent = '';
     }
 }
+
+let startTime = new Date();
+const interval = setInterval(() => {
+    const time = Math.floor((new Date() - startTime) / 1000); // 초를 반환함
+    $timer.textContent = `${time}`;
+}, 1000);
 
 /*
 (1)--
@@ -158,7 +165,7 @@ function onLeftClick(event){
     }
 }
 
-let openCount = 0;
+let openCount = 0; // 연 박스의 개수
 
 function open(rowIndex, cellIndex) {
     if(data[rowIndex]?.[cellIndex] >= CODE.OPENED) return; // 한 번 열었던 칸은 확인을 안해줘서 무한하게 호출되는 재귀를 끊는다.
@@ -170,8 +177,17 @@ function open(rowIndex, cellIndex) {
     const count = countMine(rowIndex, cellIndex);
     target.textContent = count || ''; // --(3)
     target.className = 'opened';
+    openCount++;
     data[rowIndex][cellIndex] = count;
-    console.log(++openCount);
+    if(openCount === row * cell - mine) { // 박스를 다 열었다면
+        const time = (new Date() - startTime) / 1000; // 상자를 다 열기까지 걸린 시간(소수점까지 보여줌)
+        clearInterval(interval); // setInterval 정지
+        $tbody.removeEventListener('contextmenu', onRightClick);
+        $tbody.removeEventListener('click', onLeftClick);
+        setTimeout(() => { // setTimeout으로 감싸지 않을 경우 마지막 박스가 열리기 전에 alert가 실행된다.
+            alert(`승리했습니다! 클리어까지 ${time}초가 걸렸습니다.`);
+        })
+    }
     return count;
 }
 
