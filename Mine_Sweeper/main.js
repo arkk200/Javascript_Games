@@ -1,3 +1,4 @@
+const $form = document.querySelector('#form');
 const $timer = document.querySelector('#timer');
 const $tbody = document.querySelector('#table tbody');
 const $result = document.querySelector('#result');
@@ -14,9 +15,9 @@ status codes
 닫힌 칸(지뢰 X) : -6 : NORMAL
  */
 
-const row = 10; // 줄
-const cell = 10; // 칸
-const mine = 5; // 지뢰 개수
+let row; // 줄
+let cell; // 칸
+let mine; // 지뢰 개수
 const CODE = {
     NORMAL: -1,
     QUESTION: -2,
@@ -26,6 +27,23 @@ const CODE = {
     MINE: -6,
     OPENED: 0,
 };
+let startTime;
+let interval;
+function onSubmit(event) { // form submit 이벤트 콜백 함수
+    event.preventDefault();
+    $tbody.innerHTML = '';
+    row = parseInt(event.target.row.value);
+    // console.log(event.target);
+    cell = parseInt(event.target.cell.value);
+    mine = parseInt(event.target.mine.value);
+    drawTable();
+    startTime = new Date();
+    interval = setInterval(() => {
+        const time = Math.floor((new Date() - startTime) / 1000); // 초를 반환함
+        $timer.textContent = `${time}`;
+    }, 1000);
+}
+$form.addEventListener('submit', onSubmit);
 
 let data;
 // 지뢰 놓는 함수
@@ -69,8 +87,6 @@ function drawTable() {
     })
 }
 
-drawTable();
-
 function onRightClick(event) {
     event.preventDefault(); // 우클릭할 때 기본 동작 막음
     const target = event.target;
@@ -104,12 +120,6 @@ function onRightClick(event) {
         target.textContent = '';
     }
 }
-
-let startTime = new Date();
-const interval = setInterval(() => {
-    const time = Math.floor((new Date() - startTime) / 1000); // 초를 반환함
-    $timer.textContent = `${time}`;
-}, 1000);
 
 /*
 (1)--
@@ -179,6 +189,7 @@ function open(rowIndex, cellIndex) {
     target.className = 'opened';
     openCount++;
     data[rowIndex][cellIndex] = count;
+    console.log(openCount);
     if(openCount === row * cell - mine) { // 박스를 다 열었다면
         const time = (new Date() - startTime) / 1000; // 상자를 다 열기까지 걸린 시간(소수점까지 보여줌)
         clearInterval(interval); // setInterval 정지
@@ -186,7 +197,7 @@ function open(rowIndex, cellIndex) {
         $tbody.removeEventListener('click', onLeftClick);
         setTimeout(() => { // setTimeout으로 감싸지 않을 경우 마지막 박스가 열리기 전에 alert가 실행된다.
             alert(`승리했습니다! 클리어까지 ${time}초가 걸렸습니다.`);
-        })
+        }, 10)
     }
     return count;
 }
