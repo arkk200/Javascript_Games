@@ -198,7 +198,7 @@ function open(rowIndex, cellIndex) {
         $tbody.removeEventListener('click', onLeftClick);
         setTimeout(() => { // setTimeout으로 감싸지 않을 경우 마지막 박스가 열리기 전에 alert가 실행된다.
             alert(`승리했습니다! 클리어까지 ${time}초가 걸렸습니다.`);
-        }, 10)
+        }, 100)
     }
     return count;
 }
