@@ -170,6 +170,7 @@ function onLeftClick(event){
     } else if (cellData === CODE.MINE) { // 지뢰 칸이면
         target.textContent = 'X';
         target.className = 'opened';
+        clearInterval(interval); // setInterval 정지
         $tbody.removeEventListener('contextmenu', onRightClick);
         $tbody.removeEventListener('click', onLeftClick);
     }
