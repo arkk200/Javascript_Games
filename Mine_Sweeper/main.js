@@ -36,6 +36,7 @@ function onSubmit(event) { // form submit 이벤트 콜백 함수
     // console.log(event.target);
     cell = parseInt(event.target.cell.value);
     mine = parseInt(event.target.mine.value);
+    openCount = 0;
     drawTable();
     startTime = new Date();
     interval = setInterval(() => {
