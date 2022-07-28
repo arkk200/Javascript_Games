@@ -4,6 +4,7 @@ const $drawBack = document.querySelector('#draw-back');
 let data = [];
 
 let dataLog = [];
+let scoreLog = [0];
 
 function startGame() {
     /*
@@ -60,11 +61,15 @@ function draw() {
 
 startGame();
 
+let currentScore, laterScore;
+
 $drawBack.addEventListener('click', () => {
     if(dataLog.length == 1) return;
     data = JSON.parse(JSON.stringify(dataLog[dataLog.length - 2]));
     dataLog.splice(dataLog.length - 1, 1);
     draw();
+    $score.textContent = scoreLog[scoreLog.length - 2];
+    scoreLog.splice(scoreLog.length - 1, 1);
 })
 
 let isGameEnd = false;
@@ -173,6 +178,8 @@ function moveCells(direction) {
         }
             break;
     }
+    scoreLog.push(parseInt($score.textContent));
+    console.log($score.textContent);
     if (data.flat().includes(2048)) { // 승리
         draw();
         setTimeout(() => {
