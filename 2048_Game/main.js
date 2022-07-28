@@ -1,6 +1,9 @@
 const $table = document.querySelector('#table');
 const $score = document.querySelector('#score');
+const $drawBack = document.querySelector('#draw-back');
 let data = [];
+
+let dataLog = [];
 
 function startGame() {
     /*
@@ -37,6 +40,7 @@ function put2ToRandomCell() {
     });
     const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
     data[randomCell[0]][randomCell[1]] = 2;
+    dataLog.push(JSON.parse(JSON.stringify(data)));
 }
 
 function draw() {
@@ -55,6 +59,13 @@ function draw() {
 }
 
 startGame();
+
+$drawBack.addEventListener('click', () => {
+    if(dataLog.length == 1) return;
+    data = JSON.parse(JSON.stringify(dataLog[dataLog.length - 2]));
+    dataLog.splice(dataLog.length - 1, 1);
+    draw();
+})
 
 let isGameEnd = false;
 
