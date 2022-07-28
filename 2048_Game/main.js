@@ -53,4 +53,36 @@ function draw() {
         });
     });
 }
+
 startGame();
+
+function moveCells(direction) {
+    console.log(direction);
+}
+
+window.addEventListener('keyup', event => {
+    if(event.key === 'ArrowUp') moveCells('up');
+    if(event.key === 'ArrowDown') moveCells('down');
+    if(event.key === 'ArrowLeft') moveCells('left');
+    if(event.key === 'ArrowRight') moveCells('right');
+});
+
+let startCoord;
+window.addEventListener('mousedown', event => {
+    startCoord = [event.clientX, event.clientY];
+});
+window.addEventListener('mouseup', event => {
+    const endCoord = [event.clientX, event.clientY];
+    const diffX = endCoord[0] - startCoord[0];
+    const diffY = endCoord[1] - startCoord[1];
+    console.log(diffX, diffY);
+    if(diffX < 0 && Math.abs(diffX) > Math.abs(diffY)){
+        moveCells('left');
+    } else if(diffX > 0 && Math.abs(diffX) > Math.abs(diffY)){
+        moveCells('right');
+    } else if(diffY < 0 && Math.abs(diffX) < Math.abs(diffY)){
+        moveCells('up');
+    } else if(diffY > 0 && Math.abs(diffX) < Math.abs(diffY)){
+        moveCells('down');
+    }
+});
