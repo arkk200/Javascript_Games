@@ -55,9 +55,112 @@ function draw() {
 }
 
 startGame();
+data = [
+    [0, 2, 4, 2],
+    [0, 0, 8, 0],
+    [2, 2, 2, 2],
+    [0, 16, 0, 4]
+];
+
+draw();
 
 function moveCells(direction) {
-    console.log(direction);
+    switch(direction){
+        case 'left': {
+            const newData = [[], [], [], []];
+            data.forEach((rowData, i) => {
+                rowData.forEach((cellData, j) => {
+                    if(cellData){ // 숫자가 존재한다면
+                        const currentRow = newData[i];
+                        const prevData = currentRow[currentRow.length - 1];
+                        if(prevData === cellData) { // 이전값과
+                            currentRow[currentRow.length - 1] *= -2; // 2, 2, 4, 8에서 왼쪽으로 스와이프할 때 바로 16이 되는 버그를 막기위해 2가 아닌 -2를 곱함
+                            // -2를 곱하여 2배로 만들면서 현재의 cellData는 추가하지 않음
+                            return;
+                        }
+                        newData[i].push(cellData);
+                    }
+                });
+            });
+            [1, 2, 3, 4].forEach((rowData, i) => {
+                [1, 2, 3, 4].forEach((cellData, j) => {
+                    data[i][j] = Math.abs(newData[i][j]) || 0; // -2를 곱한 값을 양수로 만들기 위해 Math.abs() 함수를 사용함
+                });
+            });
+        }
+            break;
+        case 'right': {
+            const newData = [[], [], [], []];
+            data.forEach((rowData, i) => {
+                rowData.forEach((cellData, j) => {
+                    if(rowData[3 - j]){ // 왼쪽과 반대로 함
+                        const currentRow = newData[i];
+                        const prevData = currentRow[currentRow.length - 1];
+                        if(prevData === rowData[3 - j]) { // 이전값과
+                            currentRow[currentRow.length - 1] *= -2; // 2, 2, 4, 8에서 왼쪽으로 스와이프할 때 바로 16이 되는 버그를 막기위해 2가 아닌 -2를 곱함
+                            // -2를 곱하여 2배로 만들면서 현재의 cellData는 추가하지 않음
+                            return;
+                        }
+                        newData[i].push(rowData[3 - j]);
+                    }
+                });
+            });
+            [1, 2, 3, 4].forEach((rowData, i) => {
+                [1, 2, 3, 4].forEach((cellData, j) => {
+                    data[i][3 - j] = Math.abs(newData[i][j]) || 0; // 반대로 newData에 집어넣었으므로 가져올 때도 반대로 가져옴
+                });
+            });
+        }
+            break;
+        case 'up': {
+            const newData = [[], [], [], []];
+            data.forEach((rowData, i) => {
+                rowData.forEach((cellData, j) => {
+                    if(cellData){ // 숫자가 존재한다면
+                        const currentRow = newData[j];
+                        const prevData = currentRow[currentRow.length - 1];
+                        if(prevData === cellData) { // 이전값과
+                            currentRow[currentRow.length - 1] *= -2; // 2, 2, 4, 8에서 왼쪽으로 스와이프할 때 바로 16이 되는 버그를 막기위해 2가 아닌 -2를 곱함
+                            // -2를 곱하여 2배로 만들면서 현재의 cellData는 추가하지 않음
+                            return;
+                        }
+                        newData[j].push(cellData);
+                    }
+                });
+            });
+            [1, 2, 3, 4].forEach((rowData, i) => {
+                [1, 2, 3, 4].forEach((cellData, j) => {
+                    data[j][i] = Math.abs(newData[i][j]) || 0; // -2를 곱한 값을 양수로 만들기 위해 Math.abs() 함수를 사용함
+                });
+            });
+        }
+            break;
+        case 'down': {
+            const newData = [[], [], [], []];
+            data.forEach((rowData, i) => {
+                rowData.forEach((cellData, j) => {
+                    if(data[3 - i][j]){ // 왼쪽과 반대로 함
+                        const currentRow = newData[j];
+                        const prevData = currentRow[currentRow.length - 1];
+                        if(prevData === data[3 - i][j]) { // 이전값과
+                            currentRow[currentRow.length - 1] *= -2; // 2, 2, 4, 8에서 왼쪽으로 스와이프할 때 바로 16이 되는 버그를 막기위해 2가 아닌 -2를 곱함
+                            // -2를 곱하여 2배로 만들면서 현재의 cellData는 추가하지 않음
+                            return;
+                        }
+                        newData[j].push(data[3 - i][j]);
+                    }
+                });
+            });
+            [1, 2, 3, 4].forEach((rowData, i) => {
+                [1, 2, 3, 4].forEach((cellData, j) => {
+                    data[3 - j][i] = Math.abs(newData[i][j]) || 0; // 반대로 newData에 집어넣었으므로 가져올 때도 반대로 가져옴
+                });
+            });
+        }
+            break;
+    }
+    put2ToRandomCell();
+    draw();
 }
 
 window.addEventListener('keyup', event => {
@@ -75,7 +178,6 @@ window.addEventListener('mouseup', event => {
     const endCoord = [event.clientX, event.clientY];
     const diffX = endCoord[0] - startCoord[0];
     const diffY = endCoord[1] - startCoord[1];
-    console.log(diffX, diffY);
     if(diffX < 0 && Math.abs(diffX) > Math.abs(diffY)){
         moveCells('left');
     } else if(diffX > 0 && Math.abs(diffX) > Math.abs(diffY)){
