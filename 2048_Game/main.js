@@ -56,15 +56,18 @@ function draw() {
 
 startGame();
 data = [
-    [0, 2, 4, 2],
-    [0, 0, 8, 0],
-    [2, 2, 2, 2],
-    [0, 16, 0, 4]
+    [1024, 1024, 1024, 1024],
+    [1024, 1024, 1024, 1024],
+    [1024, 1024, 1024, 1024],
+    [1024, 1024, 1024, 1024]
 ];
 
 draw();
 
+let isGameEnd = false;
+
 function moveCells(direction) {
+    if(isGameEnd) return;
     switch(direction){
         case 'left': {
             const newData = [[], [], [], []];
@@ -73,7 +76,9 @@ function moveCells(direction) {
                     if(cellData){ // 숫자가 존재한다면
                         const currentRow = newData[i];
                         const prevData = currentRow[currentRow.length - 1];
-                        if(prevData === cellData) { // 이전값과
+                        if(prevData === cellData) { // 이전 값과 현재 값이 같으면
+                            const score = parseInt($score.textContent); // 현재 점수 값을 가져온 후
+                            $score.textContent = score + currentRow[currentRow.length - 1] * 2; // 두 박스의 숫자의 합을 점수에 더함
                             currentRow[currentRow.length - 1] *= -2; // 2, 2, 4, 8에서 왼쪽으로 스와이프할 때 바로 16이 되는 버그를 막기위해 2가 아닌 -2를 곱함
                             // -2를 곱하여 2배로 만들면서 현재의 cellData는 추가하지 않음
                             return;
@@ -96,7 +101,9 @@ function moveCells(direction) {
                     if(rowData[3 - j]){ // 왼쪽과 반대로 함
                         const currentRow = newData[i];
                         const prevData = currentRow[currentRow.length - 1];
-                        if(prevData === rowData[3 - j]) { // 이전값과
+                        if(prevData === rowData[3 - j]) { // 이전 값과 현재 값이 같으면
+                            const score = parseInt($score.textContent); // 현재 점수 값을 가져온 후
+                            $score.textContent = score + currentRow[currentRow.length - 1] * 2; // 두 박스의 숫자의 합을 점수에 더함
                             currentRow[currentRow.length - 1] *= -2; // 2, 2, 4, 8에서 왼쪽으로 스와이프할 때 바로 16이 되는 버그를 막기위해 2가 아닌 -2를 곱함
                             // -2를 곱하여 2배로 만들면서 현재의 cellData는 추가하지 않음
                             return;
@@ -119,7 +126,9 @@ function moveCells(direction) {
                     if(cellData){ // 숫자가 존재한다면
                         const currentRow = newData[j];
                         const prevData = currentRow[currentRow.length - 1];
-                        if(prevData === cellData) { // 이전값과
+                        if(prevData === cellData) { // 이전 값과 현재 값이 같으면
+                            const score = parseInt($score.textContent); // 현재 점수 값을 가져온 후
+                            $score.textContent = score + currentRow[currentRow.length - 1] * 2; // 두 박스의 숫자의 합을 점수에 더함
                             currentRow[currentRow.length - 1] *= -2; // 2, 2, 4, 8에서 왼쪽으로 스와이프할 때 바로 16이 되는 버그를 막기위해 2가 아닌 -2를 곱함
                             // -2를 곱하여 2배로 만들면서 현재의 cellData는 추가하지 않음
                             return;
@@ -142,7 +151,9 @@ function moveCells(direction) {
                     if(data[3 - i][j]){ // 왼쪽과 반대로 함
                         const currentRow = newData[j];
                         const prevData = currentRow[currentRow.length - 1];
-                        if(prevData === data[3 - i][j]) { // 이전값과
+                        if(prevData === data[3 - i][j]) { // 이전 값과 현재 값이 같으면
+                            const score = parseInt($score.textContent); // 현재 점수 값을 가져온 후
+                            $score.textContent = score + currentRow[currentRow.length - 1] * 2; // 두 박스의 숫자의 합을 점수에 더함
                             currentRow[currentRow.length - 1] *= -2; // 2, 2, 4, 8에서 왼쪽으로 스와이프할 때 바로 16이 되는 버그를 막기위해 2가 아닌 -2를 곱함
                             // -2를 곱하여 2배로 만들면서 현재의 cellData는 추가하지 않음
                             return;
@@ -158,6 +169,17 @@ function moveCells(direction) {
             });
         }
             break;
+    }
+    if (data.flat().includes(2048)) { // 승리
+        draw();
+        setTimeout(() => {
+            alert(`축하합니다! 점수: ${$score.textContent}점`);
+        }, 0);
+        isGameEnd = true;
+    } else if(!data.flat().includes(0)){ // 0을 포함하고 있지 않다면 (빈칸이 없다면) 패배
+        alert(`빈칸이 더는 없습니다. 점수: ${$score.textContent}점`);
+        isGameEnd = true;
+        return;
     }
     put2ToRandomCell();
     draw();
